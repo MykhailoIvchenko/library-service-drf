@@ -2,6 +2,7 @@ from django.db import models
 from rest_framework.exceptions import ValidationError
 
 from books.models import Book
+from library_service import settings
 
 
 class Borrowing(models.Model):
@@ -9,6 +10,8 @@ class Borrowing(models.Model):
     borrow_date = models.DateTimeField(auto_now_add=True)
     expected_return_date = models.DateTimeField(null=False)
     actual_return_date = models.DateTimeField(null=True, blank=True, default=None)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
 
     def clean(self):
         super().clean()

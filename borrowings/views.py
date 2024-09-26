@@ -9,7 +9,7 @@ class BorrowingViewSet(
     mixins.RetrieveModelMixin,
     viewsets.GenericViewSet,
 ):
-    queryset = Borrowing.objects.select_related("books")
+    queryset = Borrowing.objects.select_related("book")
     serializer_class = BorrowingSerializer
 
     def get_serializer_class(self):

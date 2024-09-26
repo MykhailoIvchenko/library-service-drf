@@ -1,5 +1,4 @@
 from rest_framework import mixins, viewsets
-from rest_framework.permissions import IsAuthenticated
 
 from borrowings.models import Borrowing
 from borrowings.permissions import IsOwnerOrAdmin

@@ -53,7 +53,7 @@ class BorrowingViewSet(
         parameters=[
             OpenApiParameter(
                 "is_active",
-                type=OpenApiTypes.STR or OpenApiTypes.BOOL,
+                type=OpenApiTypes.BOOL or OpenApiTypes.STR,
                 description="Filter by borrowing activeness (active if book isn't returned yet) (ex. "
                             "?is_active=true)",
             ),

@@ -32,3 +32,12 @@ class Borrowing(models.Model):
     def save(self, *args, **kwargs):
         self.clean()
         super().save(*args, **kwargs)
+
+    @property
+    def is_active(self):
+        return self.actual_return_date is None
+
+    @property
+    def user_id(self):
+        return self.user.id
+

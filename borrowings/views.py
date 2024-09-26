@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import mixins, viewsets
 
 from borrowings.models import Borrowing
@@ -46,3 +47,21 @@ class BorrowingViewSet(
                 actual_return_date__isnull=False)
 
         return queryset
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "is_active",
+                type={"type": "list", "items": {"type": ["boolean", "string"]}},
+                description="Filter by borrowing activeness (active if book isn't returned yet) (ex. "
+                            "?is_active=true)",
+            ),
+            OpenApiParameter(
+                "user_id",
+                type={"type": "list", "items": {"type": "number"}},
+                description="Filter by user id, works only for admin users (ex. ?user_id=2)",
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)

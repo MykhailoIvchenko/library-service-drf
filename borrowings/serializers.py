@@ -14,7 +14,16 @@ class BorrowingSerializer(serializers.ModelSerializer):
             "borrow_date",
             "expected_return_date",
             "actual_return_date",
+            "user_id"
         )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        request = self.context.get("request")
+        
+        if request and not request.user.is_staff:
+            self.fields.pop("user_id")
 
 
 class BorrowingListSerializer(BorrowingSerializer):
@@ -22,7 +31,8 @@ class BorrowingListSerializer(BorrowingSerializer):
 
     class Meta:
         model = Borrowing
-        fields = ("id", "book", "borrow_date", "expected_return_date", "actual_return_date")
+        fields = ("id", "book", "borrow_date",
+                  "expected_return_date", "actual_return_date", "user_id")
 
 
 class BorrowingDetailsSerializer(BorrowingSerializer):
@@ -30,7 +40,8 @@ class BorrowingDetailsSerializer(BorrowingSerializer):
 
     class Meta:
         model = Borrowing
-        fields = ("id", "book", "borrow_date", "expected_return_date", "actual_return_date")
+        fields = ("id", "book", "borrow_date", "expected_return_date",
+                  "actual_return_date", "user_id")
 
 
 class CreateBorrowingSerializer(BorrowingSerializer):
@@ -44,10 +55,10 @@ class CreateBorrowingSerializer(BorrowingSerializer):
         return value
 
     def create(self, validated_data):
-        request = self.context.get('request')
+        request = self.context.get("request")
         user = request.user
         borrowing = Borrowing.objects.create(user=user, **validated_data)
-        book = validated_data['book']
+        book = validated_data["book"]
         book.inventory -= 1
         book.save()
         return borrowing

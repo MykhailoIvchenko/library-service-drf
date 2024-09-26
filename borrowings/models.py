@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 from rest_framework.exceptions import ValidationError
 
@@ -15,10 +16,17 @@ class Borrowing(models.Model):
 
     def clean(self):
         super().clean()
-        if self.expected_return_date < self.borrow_date:
-            raise ValidationError("The expected return date cannot be before the borrow date")
 
-        if self.actual_return_date < self.borrow_date:
+        current_date = timezone.now()
+
+        if self.borrow_date is not None:
+            if self.expected_return_date < self.borrow_date:
+                raise ValidationError("The expected return date cannot be before the borrow date")
+            elif self.expected_return_date < current_date:
+                raise ValidationError("The expected return date cannot be in the past.")
+
+        if (self.actual_return_date is not None and
+                self.actual_return_date < self.borrow_date):
             raise ValidationError("The actual return date cannot be before the borrow date")
 
     def save(self, *args, **kwargs):

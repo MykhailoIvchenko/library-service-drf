@@ -40,3 +40,21 @@ class Borrowing(models.Model):
     @property
     def user_id(self):
         return self.user.id
+
+
+def get_queryset(self):
+    queryset = self.queryset
+
+    if self.request.user.is_staff:
+        user_id = self.request.query_params.get("user_id")
+        if user_id is not None:
+            queryset = queryset.filter(user_id=user_id)
+
+    is_active = self.request.query_params.get("is_active")
+
+    if is_active is not None:
+        is_active = is_active.lower() in ["true", "yes"]
+        queryset = queryset.filter(actual_return_date__isnull=True) if is_active else queryset.filter(
+            actual_return_date__isnull=False)
+
+    return queryset

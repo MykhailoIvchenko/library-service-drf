@@ -1,3 +1,4 @@
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import mixins, viewsets
 
@@ -52,13 +53,13 @@ class BorrowingViewSet(
         parameters=[
             OpenApiParameter(
                 "is_active",
-                type={"type": "list", "items": {"type": ["boolean", "string"]}},
+                type=OpenApiTypes.STR or OpenApiTypes.BOOL,
                 description="Filter by borrowing activeness (active if book isn't returned yet) (ex. "
                             "?is_active=true)",
             ),
             OpenApiParameter(
                 "user_id",
-                type={"type": "list", "items": {"type": "number"}},
+                type=OpenApiTypes.STR,
                 description="Filter by user id, works only for admin users (ex. ?user_id=2)",
             ),
         ]

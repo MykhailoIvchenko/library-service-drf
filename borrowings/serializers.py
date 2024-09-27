@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+from django.utils import timezone
+
 from books.serializers import BookSerializer
 from borrowings.models import Borrowing
 
@@ -21,8 +23,9 @@ class BorrowingSerializer(serializers.ModelSerializer):
         super().__init__(*args, **kwargs)
 
         request = self.context.get("request")
-        
-        if request and not request.user.is_staff:
+
+        if (request and not request.user.is_staff
+                and self.fields.__contains__("user_id")):
             self.fields.pop("user_id")
 
 
@@ -47,7 +50,7 @@ class BorrowingDetailsSerializer(BorrowingSerializer):
 class CreateBorrowingSerializer(BorrowingSerializer):
     class Meta:
         model = Borrowing
-        fields = ("book", "expected_return_date")
+        fields = ("id", "book", "expected_return_date")
 
     def validate_book(self, value):
         if value.inventory <= 0:

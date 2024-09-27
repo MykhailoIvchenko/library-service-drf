@@ -10,7 +10,8 @@ class Borrowing(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     borrow_date = models.DateTimeField(auto_now_add=True)
     expected_return_date = models.DateTimeField(null=False)
-    actual_return_date = models.DateTimeField(null=True, blank=True, default=None)
+    actual_return_date = models.DateTimeField(null=True,
+                                              blank=True, default=None)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
 
@@ -21,13 +22,16 @@ class Borrowing(models.Model):
 
         if self.borrow_date is not None:
             if self.expected_return_date < self.borrow_date:
-                raise ValidationError("The expected return date cannot be before the borrow date")
+                raise ValidationError("The expected return date cannot "
+                                      "be before the borrow date")
             elif self.expected_return_date < current_date:
-                raise ValidationError("The expected return date cannot be in the past.")
+                raise ValidationError("The expected return date cannot "
+                                      "be in the past.")
 
-        if (self.actual_return_date is not None and
-                self.actual_return_date < self.borrow_date):
-            raise ValidationError("The actual return date cannot be before the borrow date")
+        if (self.actual_return_date is not None
+                and self.actual_return_date < self.borrow_date):
+            raise ValidationError("The actual return date cannot be "
+                                  "before the borrow date")
 
     def save(self, *args, **kwargs):
         self.clean()
@@ -40,4 +44,3 @@ class Borrowing(models.Model):
     @property
     def user_id(self):
         return self.user.id
-

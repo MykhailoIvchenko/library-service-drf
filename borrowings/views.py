@@ -4,8 +4,11 @@ from rest_framework import mixins, viewsets
 
 from borrowings.models import Borrowing
 from borrowings.permissions import IsOwnerOrAdmin
-from borrowings.serializers import BorrowingSerializer, BorrowingListSerializer, BorrowingDetailsSerializer, \
-    CreateBorrowingSerializer
+from borrowings.serializers import (
+    BorrowingSerializer,
+    BorrowingListSerializer,
+    BorrowingDetailsSerializer,
+    CreateBorrowingSerializer)
 
 
 class BorrowingViewSet(
@@ -44,8 +47,9 @@ class BorrowingViewSet(
 
         if is_active is not None:
             is_active = is_active.lower() in ["true", "yes"]
-            queryset = queryset.filter(actual_return_date__isnull=True) if is_active else queryset.filter(
-                actual_return_date__isnull=False)
+            queryset = queryset.filter(
+                actual_return_date__isnull=True) if is_active else (
+                queryset.filter(actual_return_date__isnull=False))
 
         return queryset
 
@@ -54,13 +58,14 @@ class BorrowingViewSet(
             OpenApiParameter(
                 "is_active",
                 type=OpenApiTypes.BOOL or OpenApiTypes.STR,
-                description="Filter by borrowing activeness (active if book isn't returned yet) (ex. "
-                            "?is_active=true)",
+                description="Filter by borrowing activeness (active if book "
+                            "is not returned yet) (ex. ?is_active=true)",
             ),
             OpenApiParameter(
                 "user_id",
                 type=OpenApiTypes.STR,
-                description="Filter by user id, works only for admin users (ex. ?user_id=2)",
+                description="Filter by user id, works only for admin users "
+                            "(ex. ?user_id=2)",
             ),
         ]
     )
